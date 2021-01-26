@@ -34,44 +34,44 @@
 
                         $contacts = [
                             [
+                                'image' => 'img/demo/authors/sunny.png',
                                 'name' => 'Sunny',
                                 'surname' => 'A.',
-                                'img' => 'img/demo/authors/sunny.png',
                                 'position' => 'UI/UX Expert',
                                 'job' => 'Lead Author',
                                 'twitter' => '@myplaneticket',
                                 'wrapbootstrap' => 'myorange',
-                                'banned' => '',
+                                'status' => 'active',
                             ],
                             [
                                 'name' => 'Jos',
                                 'surname' => 'K.',
-                                'img' => 'img/demo/authors/josh.png',
+                                'image' => 'img/demo/authors/josh.png',
                                 'position' => 'ASP.NET Developer',
                                 'job' => 'Partner &amp; Contributor',
                                 'twitter' => '@atlantez',
                                 'wrapbootstrap' => 'Walapa',
-                                'banned' => '',
+                                'status' => 'active',
                             ],
                             [
                                 'name' => 'Jovanni',
                                 'surname' => 'L.',
-                                'img' => 'img/demo/authors/jovanni.png',
+                                'image' => 'img/demo/authors/jovanni.png',
                                 'position' => 'PHP Developer',
                                 'job' => 'Partner &amp; Contributor',
                                 'twitter' => '@lodev09',
                                 'wrapbootstrap' => 'lodev09',
-                                'banned' => 'banned',
+                                'status' => 'banned',
                             ],
                             [
                                 'name' => 'Roberto',
                                 'surname' => 'R.',
-                                'img' => 'img/demo/authors/roberto.png',
+                                'image' => 'img/demo/authors/roberto.png',
                                 'position' => 'Rails Developer',
                                 'job' => 'Partner &amp; Contributor',
                                 'twitter' => '@sildur',
                                 'wrapbootstrap' => 'sildur',
-                                'banned' => 'banned',
+                                'status' => 'banned',
                             ],
                         ];
                         
@@ -80,8 +80,8 @@
                         <div class="panel-content">
                             <div class="d-flex flex-wrap demo demo-h-spacing mt-3 mb-3">
                                 <?php foreach ( $contacts as $contact ) :?>
-                                    <div class="<?php echo $contact['banned']; ?> rounded-pill bg-white shadow-sm p-2 border-faded mr-3 d-flex flex-row align-items-center justify-content-center flex-shrink-0">
-                                        <img src="<?php echo $contact['img']; ?>" alt="<?php echo $contact['name']; ?> <?php echo $contact['surname']; ?>" class="img-thumbnail img-responsive rounded-circle" style="width:5rem; height: 5rem;">
+                                    <div class="<?php echo $contact['status'] == 'banned' ? 'banned' : ''; ?> rounded-pill bg-white shadow-sm p-2 border-faded mr-3 d-flex flex-row align-items-center justify-content-center flex-shrink-0">
+                                        <img src="<?php echo $contact['image']; ?>" alt="<?php echo $contact['name']; ?> <?php echo $contact['surname']; ?>" class="img-thumbnail img-responsive rounded-circle" style="width:5rem; height: 5rem;">
                                         <div class="ml-2 mr-3">
                                             <h5 class="m-0">
                                                 <?php echo $contact['name']; ?> <?php echo $contact['surname']; ?> (<?php echo $contact['position']; ?>)

@@ -56,7 +56,7 @@
                         <div class="panel-content">
                             <div class="d-flex flex-wrap demo demo-h-spacing mt-3 mb-3">
                                 <?php foreach ( $contacts as $contact ) :?>
-                                    <div class="<?php echo $contact['banned']; ?> rounded-pill bg-white shadow-sm p-2 border-faded mr-3 d-flex flex-row align-items-center justify-content-center flex-shrink-0">
+                                    <div class="<?php echo $contact['status'] == 'banned' ? 'banned' : ''; ?>  rounded-pill bg-white shadow-sm p-2 border-faded mr-3 d-flex flex-row align-items-center justify-content-center flex-shrink-0">
                                         <img src="<?php echo $contact['img']; ?>" alt="<?php echo $contact['name']; ?> <?php echo $contact['surname']; ?>" class="img-thumbnail img-responsive rounded-circle" style="width:5rem; height: 5rem;">
                                         <div class="ml-2 mr-3">
                                             <h5 class="m-0">

@@ -35,28 +35,29 @@
                         $breadcrumbs = [
                             [
                                 'title' => 'Главная',
-                                'link'  => '#',
+                                'link'  => 'www.domain.lt',
+                                'is_link' => true,
                             ],
                             [
                                 'title' => 'PHP',
-                                'link'  => '#',
+                                'link'  => 'www.domain.lt/php',
+                                'is_link' => true,
                             ],
                             [
                                 'title' => 'Функции',
                                 'link'  => '',
+                                'is_link' => false,
                             ],
                         ];
 
-                        $count = count($breadcrumbs);
-                        $i = 1;
                     ?>
                     <div class="panel-container show">
                         <div class="panel-content">
                             <ol class="breadcrumb page-breadcrumb">
                                 <?php foreach( $breadcrumbs as $item ) : ?>
 
-                                    <?php if ($i !== $count ) : ?>
-                                        <li class="breadcrumb-item"><a href="#"><?php echo $item['title']; ?></a></li>
+                                    <?php if ( $item['is_link'] ) : ?>
+                                        <li class="breadcrumb-item"><a href="<?php echo $item['link']; ?>"><?php echo $item['title']; ?></a></li>
                                     <?php else : ?>
                                         <li class="breadcrumb-item active"><?php echo $item['title']; ?></li>
                                     <?php endif; ?>
