@@ -1,3 +1,13 @@
+<?php
+    session_start();
+    require "core/functions.php";
+
+    if ( is_usert_not_logged_in() ) {
+        redirect_to('page_login.php');
+    } 
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,11 +33,13 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav ml-auto">
+                    <?php if ( is_usert_not_logged_in() ) : ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="page_login.html">Войти</a>
+                        </li>
+                    <?php endif; ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="page_login.html">Войти</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Выйти</a>
+                        <a class="nav-link" href="core/logout.php">Выйти</a>
                     </li>
                 </ul>
             </div>

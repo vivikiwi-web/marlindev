@@ -17,7 +17,7 @@ function pdo_connection () {
  */
 function get_user_by_email( $email ) {
 
-    $sql = "SELECT id FROM users WHERE email=:email";
+    $sql = "SELECT * FROM users WHERE email=:email";
 
     $pdo = pdo_connection (); // Connect to the database function
 
@@ -61,17 +61,27 @@ function set_flash_message( $name, $message ) {
 /**
  * Display flash message with $_SESSION
  *
- * @param string $name
+ * @param string || array $name
  * @return void
  */
 function display_flash_message ( $key ) {
-    
-    if ( isset( $_SESSION[ $key ] ) ) :
 
+    // If $key is array
+    if ( is_array( $key ) ) {
+        foreach( $key as $k) {
+            if ( isset( $_SESSION[ $k ] ) ) {
+                echo "<div class=\"alert alert-{$k}\">{$_SESSION[ $k ]}</div>";
+                unset( $_SESSION[ $k ] );
+            }
+        }
+        return;
+    }
+    
+    if ( isset( $_SESSION[ $key ] ) ) {
         echo "<div class=\"alert alert-{$key}\">{$_SESSION[ $key ]}</div>";
         unset( $_SESSION[ $key ] );
-
-    endif;
+        return;
+    }
 }
 
 /**
@@ -82,4 +92,61 @@ function display_flash_message ( $key ) {
  */
 function redirect_to ( $path ) {
     header( "Location: {$path}" );
+}
+
+/**
+ * User authorisation
+ *
+ * @param string $email
+ * @param string $password
+ * @return boolean
+ */
+function login( $email, $password ) {
+
+    $user = get_user_by_email( $email );
+
+    if ( empty( $user ) || !password_verify( $password, $user['password'] ) ) {
+        set_flash_message('danger', "Введены не правельные данные. Попробыйте еще раз.");
+        return false;
+    }
+
+    unset($user['password']); // Delete hashed password from array (for security)
+
+    $_SESSION['auth'] = $user;
+    return true;
+}
+
+/**
+ * Check if user is not logged in
+ *
+ * @return boolean
+ */
+function is_usert_not_logged_in() {
+    if ( !isset($_SESSION['auth']) ) {
+        return true;
+    }
+
+    return false;
+}
+
+/**
+ * Logout user
+ *
+ * @return void
+ */
+function logout() {
+    unset($_SESSION['auth']);
+}
+
+/**
+ * Function for develompent, returns var_dumo in PRE tag
+ *
+ * @param any $val
+ * @return void
+ */
+function dnd( $val ) {
+    echo "<pre>";
+    var_dump( $val );
+    echo "</pre>";
+    die;
 }
