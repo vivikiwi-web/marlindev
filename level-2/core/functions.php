@@ -110,7 +110,7 @@ function login( $email, $password ) {
         return false;
     }
 
-    unset($user['password']); // Delete hashed password from array (for security)
+    delete_password_from_array($user); // Delete hashed password from array (for security)
 
     $_SESSION['auth'] = $user;
     return true;
@@ -149,4 +149,61 @@ function dnd( $val ) {
     var_dump( $val );
     echo "</pre>";
     die;
+}
+
+/**
+ * Check user role if user is admin
+ *
+ * @return boolean
+ */
+function is_admin() {
+    if ( $_SESSION['auth']['role'] == 'admin' ) {
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Get all rows from database by specific table
+ *
+ * @return array $users
+ */
+function get_all( $table ) {
+    $sql = "SELECT * FROM {$table}";
+
+    $pdo = pdo_connection (); // Connect to the database function
+
+    $stmt = $pdo->prepare( $sql ); 
+    $stmt->execute();
+    $result = $stmt->fetchAll( PDO::FETCH_ASSOC );
+
+    delete_password_from_array($result); // Delete hashed password from array (for security)
+
+    return $result;
+}
+
+/**
+ * Function that delete password item from array
+ *
+ * @param array $arr
+ * @return void
+ */
+function delete_password_from_array( array $arr) {
+
+    if ( isset($arr['password']) ) {
+        unset( $arr['password'] ); // Delete hashed password from array (for security)
+    }
+}
+
+/**
+ * Function that return true if it ADMIN or USER ID is equals to SESSION authorisation ID
+ *
+ * @param integer $user_id
+ * @return boolean
+ */
+function show_all_to_admin_or_one_to_user( int $user_id ) {
+    if ( is_admin() || $_SESSION['auth']['id'] == $user_id ) {
+        return true;
+    }
+    return false;
 }
