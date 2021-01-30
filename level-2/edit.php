@@ -1,3 +1,27 @@
+<?php
+    session_start();
+    require "core/functions.php";
+
+    if ( !isset($_GET['id']) ) {
+        redirect_to('users.php');
+    }
+
+    $logged_user_id = $_SESSION['auth']['id'];
+    $edit_user_id = $_GET['id'];
+
+    if ( is_usert_not_logged_in() ) {
+        redirect_to('page_login.php');
+    }
+
+    if ( !is_admin() && !is_author( $logged_user_id, $edit_user_id ) ) {
+        set_flash_message('danger', 'Можно редактировать только свой профиль');
+        redirect_to('users.php');
+    }
+
+    $user = get_user_by_id( $edit_user_id );
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,11 +46,13 @@
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
+                <?php if ( is_usert_not_logged_in() ) : ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="page_login.html">Войти</a>
+                    </li>
+                <?php endif; ?>
                 <li class="nav-item">
-                    <a class="nav-link" href="page_login.html">Войти</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Выйти</a>
+                    <a class="nav-link" href="core/logout.php">Выйти</a>
                 </li>
             </ul>
         </div>
@@ -38,7 +64,7 @@
             </h1>
 
         </div>
-        <form action="">
+        <form action="core/edit_user.php" method="post">
             <div class="row">
                 <div class="col-xl-6">
                     <div id="panel-1" class="panel">
@@ -50,27 +76,28 @@
                                 <!-- username -->
                                 <div class="form-group">
                                     <label class="form-label" for="simpleinput">Имя</label>
-                                    <input type="text" id="simpleinput" class="form-control" value="Иван иванов">
+                                    <input type="text" name="fullname" id="simpleinput" class="form-control" value="<?php echo $user['fullname']; ?>">
                                 </div>
 
                                 <!-- title -->
                                 <div class="form-group">
                                     <label class="form-label" for="simpleinput">Место работы</label>
-                                    <input type="text" id="simpleinput" class="form-control" value="Marlin Веб-разработчик">
+                                    <input type="text" name="position" id="simpleinput" class="form-control" value="<?php echo $user['position']; ?>">
                                 </div>
 
                                 <!-- tel -->
                                 <div class="form-group">
                                     <label class="form-label" for="simpleinput">Номер телефона</label>
-                                    <input type="text" id="simpleinput" class="form-control" value="8 888 8888 88">
+                                    <input type="text" name="phone" id="simpleinput" class="form-control" value="<?php echo $user['phone']; ?>">
                                 </div>
 
                                 <!-- address -->
                                 <div class="form-group">
                                     <label class="form-label" for="simpleinput">Адрес</label>
-                                    <input type="text" id="simpleinput" class="form-control" value="Восточные Королевства, Штормград">
+                                    <input type="text" name="address" id="simpleinput" class="form-control" value="<?php echo $user['address']; ?>">
                                 </div>
                                 <div class="col-md-12 mt-3 d-flex flex-row-reverse">
+                                    <input type="hidden" name="edit_user_id" value="<?php echo $edit_user_id; ?>">
                                     <button class="btn btn-warning">Редактировать</button>
                                 </div>
                             </div>

@@ -3,13 +3,7 @@ session_start();
 require "functions.php";
 
 // Security if someone will open this page directly
-if ( empty($_POST) ) {
-
-    set_flash_message('danger', "<strong>Уведомление!</strong> Этот файл недоступен.");
-    redirect_to ( '../users.php' );
-    die;
-
-}
+check_if_post_not_empty($_POST, '../users.php');
 
 // Extract all $_POST values with keys and create dynamic variables
 foreach( $_POST as $key => $value ) {

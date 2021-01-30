@@ -257,7 +257,6 @@ function login( $email, $password ) {
     $user = get_user_by_email( $email );
 
     if ( empty( $user ) || !password_verify( $password, $user['password'] ) ) {
-        set_flash_message('danger', "Введены не правельные данные. Попробыйте еще раз.");
         return false;
     }
 
@@ -265,6 +264,15 @@ function login( $email, $password ) {
 
     $_SESSION['auth'] = $user;
     return true;
+}
+
+/**
+ * Logout user
+ *
+ * @return void
+ */
+function logout() {
+    unset($_SESSION['auth']);
 }
 
 /**
@@ -281,28 +289,6 @@ function is_usert_not_logged_in() {
 }
 
 /**
- * Logout user
- *
- * @return void
- */
-function logout() {
-    unset($_SESSION['auth']);
-}
-
-/**
- * Function for develompent, returns var_dumo in PRE tag
- *
- * @param any $val
- * @return void
- */
-function dnd( $val ) {
-    echo "<pre>";
-    var_dump( $val );
-    echo "</pre>";
-    die;
-}
-
-/**
  * Check user role if user is admin
  *
  * @return boolean
@@ -312,6 +298,43 @@ function is_admin() {
         return true;
     }
     return false;
+}
+
+/**
+ * Check if current user is author of editable user
+ *
+ * @param integer $logged_user_id
+ * @param integer $edit_user_id
+ * @return boolean
+ */
+function is_author( $logged_user_id, $edit_user_id) {
+
+    if ( $logged_user_id == $edit_user_id ) {
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Get user by id
+ *
+ * @param integer $id
+ * @return array
+ */
+function get_user_by_id(int $id) {
+
+    $sql = "SELECT * FROM users WHERE id={$id}";
+
+    $pdo = pdo_connection (); // Connect to the database function
+
+    $stmt = $pdo->prepare( $sql ); 
+    $stmt->execute();
+    $result = $stmt->fetch( PDO::FETCH_ASSOC );
+
+    delete_password_from_array($result); // Delete hashed password from array (for security)
+
+    return $result;
+
 }
 
 /**
@@ -357,4 +380,35 @@ function show_all_to_admin_or_one_to_user( int $user_id ) {
         return true;
     }
     return false;
+}
+
+/**
+ * Function for develompent, returns var_dumo in PRE tag
+ *
+ * @param any $val
+ * @return void
+ */
+function dnd( $val ) {
+    echo "<pre>";
+    var_dump( $val );
+    echo "</pre>";
+    die;
+}
+
+/**
+ * Security check if POST global variable is set, if not ther redirect to given path
+ *
+ * @param $_POST $post
+ * @param string $redirect_to
+ * @return void
+ */
+function check_if_post_not_empty( $post, string $redirect_to) {
+
+    if ( empty($_POST) ) {
+
+        set_flash_message('danger', "<strong>Уведомление!</strong> Этот файл недоступен.");
+        redirect_to ( $redirect_to );
+        die;
+
+    }
 }
