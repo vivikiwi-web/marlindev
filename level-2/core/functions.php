@@ -34,7 +34,7 @@ function get_user_by_email( $email ) {
  * @param string $password
  * @return int $user_id
  */
-function add_email ( $email, $password ) {
+function add_user ( $email, $password ) {
 
     $sql = "INSERT INTO users ( email, password ) VALUES ( :email, :password )";
 
@@ -45,6 +45,157 @@ function add_email ( $email, $password ) {
             'email'    => $email,
             'password' => password_hash( $password, PASSWORD_DEFAULT ),
     ]);
+
+    return $pdo->lastInsertId();
+}
+
+/**
+ * Edit user information
+ *
+ * @param string $fullname
+ * @param string $position
+ * @param string $phone
+ * @param string $address
+ * @param int $user_id
+ * @return boolean
+ */
+function edit_user_information ( $fullname, $position, $phone, $address, $user_id ) {
+
+    $sql = "UPDATE users SET fullname = :fullname, position = :position, phone = :phone, address = :address WHERE users.id = $user_id";
+
+    $pdo = pdo_connection (); // Connect to the database function
+
+    $stmt = $pdo->prepare( $sql );
+    $stmt->execute([
+            'fullname' => $fullname,
+            'position' => $position,
+            'phone'    => $phone,
+            'address'  => $address,
+    ]);
+}
+
+/**
+ * Update database values by user id
+ *
+ * @param string $table
+ * @param array $fields
+ * @param int $user_id
+ * @return void
+ */
+function update_query_by_id ( string $table, array $fields, $user_id ) {
+
+    $fieldString = '';
+
+    foreach($fields as $key => $value ) {
+        $fieldString .= $key . '=:' . $key . ', ';
+    }
+
+    $fieldString = trim( $fieldString); // delete spaces
+    $fieldString = rtrim( $fieldString, ','); // delete last comma
+
+    $sql = "UPDATE {$table} SET {$fieldString} WHERE id={$user_id}";
+
+    $pdo = pdo_connection (); // Connect to the database function
+
+    $stmt = $pdo->prepare( $sql );
+    $stmt->execute( $fields );
+
+}
+
+/**
+ * Set user status
+ *
+ * @param string $status
+ * @param integer $user_id
+ * @return void
+ */
+function set_status ( $status, $user_id ) {
+    $sql = "UPDATE users SET status = :status WHERE users.id = $user_id";
+
+    $pdo = pdo_connection (); // Connect to the database function
+
+    $stmt = $pdo->prepare( $sql );
+    $stmt->execute([
+            'status' => $status,
+    ]);
+}
+
+/**
+ * Upload user avatar image
+ *
+ * @param array $image
+ * @param integer $user_id
+ * @return void
+ */
+function upload_avatar ( $image, $user_id ) {
+
+    // Check file size. MAX size 2mg
+    if ( $image['size'] > 2097152 ) {
+        set_flash_message('danger', 'Файл должен быть не более 2мб');
+        redirect_to('../create_user.php');
+    }
+
+    $folder = 'uploads/';
+    $file_extention =  pathinfo( $image['name'], PATHINFO_EXTENSION ); // return file extention => 'jpg'
+
+    // Check for correct file extention
+    $allowed_extentions = ['jpeg', 'jpg', 'png', 'svg', 'webp'];
+    if ( !in_array( $file_extention, $allowed_extentions)) {
+        set_flash_message('danger', 'Файл должен быть в формате .jpg, .jpeg, .png, .webp или .svg');
+        redirect_to('../create_user.php');
+    }
+
+    // New file name 
+    $new_file_name = str_replace( '.' . $file_extention, '', $image['name']) . "-" . rand() . "-" . time() . '.' . $file_extention;
+    
+    // Directories
+    $uploaded_path = $image["tmp_name"];
+    $save_file_path = $folder . $new_file_name;
+
+    // Move file to UPLOADS directory
+    move_uploaded_file($uploaded_path, '../' . $save_file_path );
+
+    // Update image url in database
+    update_query_by_id( 'users', ['image' => $save_file_path], $user_id );
+
+
+}
+
+/**
+ * Delete file from server by given file path
+ *
+ * @param string $file_path
+ * @return boolean
+ */
+function delete_file_from_server ( string $file_path ) {
+    if ( !unlink($file_path)) {
+        return false;
+    }
+    return true;
+}
+
+/**
+ * User user social links
+ *
+ * @param string $telegram
+ * @param string $instagra
+ * @param string $vk
+ * @param integer $user_id
+ * @return void
+ */
+function add_social_links ( $telegram, $instagram, $vk, $user_id ) {
+
+    $sql = "UPDATE users SET telegram = :telegram, instagram = :instagram, vk = :vk WHERE users.id = $user_id";
+
+    $pdo = pdo_connection (); // Connect to the database function
+
+    $stmt = $pdo->prepare( $sql );
+    $stmt->execute([
+            'telegram' => $telegram,
+            'instagram' => $instagram,
+            'vk'       => $vk,
+    ]);
+
 }
 
 /**
