@@ -31,8 +31,8 @@ if ( !$result ) {
 
 }
 
-// Update fields in databse
-update_query_by_id('users', [$email, $password], $edit_user_id);
+// Update fields in database
+update_query_by_id('users', [$email, password_hash($password, PASSWORD_DEFAULT)], $edit_user_id);
 
 // Set flash success message
 set_flash_message('success', 'Профиль успешно обновлен.');

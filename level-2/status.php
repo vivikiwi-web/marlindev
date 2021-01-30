@@ -1,3 +1,28 @@
+<?php
+    session_start();
+    require "core/functions.php";
+
+    if ( !isset($_GET['id']) ) {
+        redirect_to('users.php');
+    }
+
+    $logged_user_id = $_SESSION['auth']['id'];
+    $edit_user_id = $_GET['id'];
+
+    if ( is_usert_not_logged_in() ) {
+        redirect_to('page_login.php');
+    }
+
+    if ( !is_admin() && !is_author( $logged_user_id, $edit_user_id ) ) {
+        set_flash_message('danger', 'Можно редактировать только свой профиль');
+        redirect_to('users.php');
+    }
+
+    $user = get_user_by_id( $edit_user_id );
+
+    $status_values = ['Онлайн', 'Отошел', 'Не беспокоить'];
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,19 +39,21 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary bg-primary-gradient">
-        <a class="navbar-brand d-flex align-items-center fw-500" href="users.html"><img alt="logo" class="d-inline-block align-top mr-2" src="img/logo.png"> Учебный проект</a> <button aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbarColor02" data-toggle="collapse" type="button"><span class="navbar-toggler-icon"></span></button>
+        <a class="navbar-brand d-flex align-items-center fw-500" href="users.php"><img alt="logo" class="d-inline-block align-top mr-2" src="img/logo.png"> Учебный проект</a> <button aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbarColor02" data-toggle="collapse" type="button"><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navbarColor02">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Главная <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="users.php">Главная</a>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
+                <?php if ( is_usert_not_logged_in() ) : ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="page_login.html">Войти</a>
+                    </li>
+                <?php endif; ?>
                 <li class="nav-item">
-                    <a class="nav-link" href="page_login.html">Войти</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Выйти</a>
+                    <a class="nav-link" href="core/logout.php">Выйти</a>
                 </li>
             </ul>
         </div>
@@ -38,7 +65,7 @@
             </h1>
 
         </div>
-        <form action="">
+        <form action="core/edit-status.php" method="post">
             <div class="row">
                 <div class="col-xl-6">
                     <div id="panel-1" class="panel">
@@ -52,14 +79,17 @@
                                         <!-- status -->
                                         <div class="form-group">
                                             <label class="form-label" for="example-select">Выберите статус</label>
-                                            <select class="form-control" id="example-select">
-                                                <option>Онлайн</option>
-                                                <option>Отошел</option>
-                                                <option>Не беспокоить</option>
+                                            <select name="status" class="form-control" id="example-select">
+
+                                                <?php foreach($status_values as $option) { ?>
+                                                    <option <?php echo ($user['status'] == $option) ? 'selected' : ''; ?>><?php echo $option; ?></option>;
+                                                <?php } ?>
+                                                
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-md-12 mt-3 d-flex flex-row-reverse">
+                                        <input type="hidden" name="edit_user_id" value="<?php echo $user['id']; ?>">
                                         <button class="btn btn-warning">Set Status</button>
                                     </div>
                                 </div>
