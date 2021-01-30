@@ -412,3 +412,18 @@ function check_if_post_not_empty( $post, string $redirect_to) {
 
     }
 }
+
+/**
+ * Compare two values
+ *
+ * @param string $password
+ * @param string $password_repeat
+ * @return boolean
+ */
+function compare_fields( string $password, string $password_repeat) {
+
+    if ( $password !== $password_repeat) {
+        return false;
+    }
+    return true; 
+}

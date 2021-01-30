@@ -6,9 +6,7 @@ require "functions.php";
 check_if_post_not_empty($_POST, '../users.php');
 
 // Extract all $_POST values with keys and create dynamic variables
-foreach( $_POST as $key => $value ) {
-    $$key = $value;
-}
+extract($_POST, EXTR_OVERWRITE);
 
 edit_user_information( $fullname, $position, $phone, $address, $edit_user_id);
 

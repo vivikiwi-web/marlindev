@@ -3,8 +3,8 @@ session_start();
 
 require 'functions.php';
 
-$email = $_POST['email'];
-$password = $_POST['password'];
+// Extract all $_POST values with keys and create dynamic variables
+extract($_POST, EXTR_OVERWRITE);
 
 $auth = login( $email, $password );
 
