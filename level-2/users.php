@@ -85,7 +85,23 @@
                     <div id="c_1" class="card border shadow-0 mb-g shadow-sm-hover" data-filter-tags="oliver kopyov">
                         <div class="card-body border-faded border-top-0 border-left-0 border-right-0 rounded-top">
                             <div class="d-flex flex-row align-items-center">
-                                <span class="status status-success mr-3">
+                                <?php
+
+                                    $status_class = 'status-success';
+                                    switch( $user['status']) {
+                                        case 'Онлайн':
+                                            $status_class = 'status-success';
+                                            break;
+                                        case 'Отошел':
+                                            $status_class = 'status-warning';
+                                            break;
+                                        case 'Не беспокоить':
+                                            $status_class = 'status-danger';
+                                            break;
+                                    }
+                                
+                                ?>
+                                <span class="status <?php echo $status_class; ?> mr-3"> <!-- status-success status-danger status-warning -->
                                     <span class="rounded-circle profile-image d-block " style="background-image:url('<?php echo $user['image']; ?>'); background-size: cover;"></span>
                                 </span>
                                 <div class="info-card-text flex-1">

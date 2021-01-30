@@ -158,6 +158,19 @@ function upload_avatar ( $image, $user_id ) {
     // Update image url in database
     update_query_by_id( 'users', ['image' => $save_file_path], $user_id );
 
+}
+
+/**
+ * Delete old avatas by given path
+ *
+ * @param string $path
+ * @return void
+ */
+function delete_avatar( string $path ) {
+
+    if ( !empty($path) ) {
+        unlink($path);
+    } 
 
 }
 
