@@ -39,9 +39,3 @@ set_flash_message('success', 'Профиль успешно обновлен.');
 
 // Redirect to the users list page
 redirect_to('../users.php');
-
-
-
-
-
-

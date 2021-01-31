@@ -440,3 +440,12 @@ function compare_fields( string $password, string $password_repeat) {
     }
     return true; 
 }
+
+function delete_row_by_id( string $table, $id) {
+    $sql = "DELETE FROM {$table} WHERE id={$id}";
+
+    $pdo = pdo_connection (); // Connect to the database function
+
+    $stmt = $pdo->prepare( $sql ); 
+    $stmt->execute();
+}
