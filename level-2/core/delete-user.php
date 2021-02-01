@@ -24,6 +24,9 @@ if ( !is_admin() && !is_author( $logged_user_id, $delete_user_id ) ) {
 
 delete_row_by_id( 'users', $delete_user_id );
 
+// Delete user old image
+delete_avatar('../' . $delete_user_id);
+
 if ( $logged_user_id == $delete_user_id ) {
     logout();
     redirect_to('../page_login.php');
