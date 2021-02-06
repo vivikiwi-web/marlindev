@@ -121,18 +121,38 @@ function set_status ( $status, $user_id ) {
 }
 
 /**
+ * Check if user have avatar image
+ *
+ * @param integer $user_id
+ */
+function has_image( $user_id ) {
+
+    $user = get_user_by_id( $user_id );
+
+    if ( empty( $user['image'] )) {
+        return false;
+    }
+
+    return true;
+}
+
+/**
  * Upload user avatar image
  *
  * @param array $image
  * @param integer $user_id
+ * @param string $redirect_to Redirect path
+ * @param boolean $is_redirect_id True if you need redirect back with User ID
  * @return void
  */
-function upload_avatar ( $image, $user_id ) {
+function upload_avatar ( $image, $user_id, $redirect_to, $is_redirect_id = false ) {
 
     // Check file size. MAX size 2mg
     if ( $image['size'] > 2097152 ) {
         set_flash_message('danger', 'Файл должен быть не более 2мб');
-        redirect_to('../create_user.php');
+        if ( $is_redirect_id == true ) $redirect_to .= $user_id;
+        redirect_to( $redirect_to );
+        return false;
     }
 
     $folder = 'uploads/';
@@ -142,7 +162,9 @@ function upload_avatar ( $image, $user_id ) {
     $allowed_extentions = ['jpeg', 'jpg', 'png', 'svg', 'webp'];
     if ( !in_array( $file_extention, $allowed_extentions)) {
         set_flash_message('danger', 'Файл должен быть в формате .jpg, .jpeg, .png, .webp или .svg');
-        redirect_to('../create_user.php');
+        if ( $is_redirect_id == true ) $redirect_to .= $user_id;
+        redirect_to( $redirect_to );
+        return false;
     }
 
     // New file name 

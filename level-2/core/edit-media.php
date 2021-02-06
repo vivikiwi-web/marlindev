@@ -9,8 +9,11 @@ check_if_post_not_empty($_POST, '../users.php');
 extract($_POST, EXTR_OVERWRITE);
 
 // Upload user avatar image
-upload_avatar ( $_FILES['image'], $edit_user_id );
+$is_uploaded = upload_avatar ( $_FILES['image'], $edit_user_id, '../media.php?id=', true );
 
+if ( !$is_uploaded ) {
+    return;
+}
 // Delete user old image
 delete_avatar('../' . $edit_user_image);
 

@@ -20,6 +20,9 @@
 
     $user = get_user_by_id( $edit_user_id );
 
+    // Check if user have avatar image
+    $image = ( has_image( $edit_user_id ) ) ? $user['image'] : 'img/demo/avatars/avatar-m.png';
+
 ?>
 
 <!DOCTYPE html>
@@ -57,6 +60,7 @@
             </ul>
         </div>
     </nav>
+
     <main id="js-page-content" role="main" class="page-content mt-3">
         <div class="subheader">
             <h1 class="subheader-title">
@@ -64,6 +68,9 @@
             </h1>
 
         </div>
+    
+        <?php display_flash_message(['danger']); ?>
+
         <form action="core/edit-media.php" method="post" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-xl-6">
@@ -74,7 +81,7 @@
                             </div>
                             <div class="panel-content">
                                 <div class="form-group">
-                                    <img src="<?php echo $user['image']; ?>" alt="" class="img-responsive" width="200">
+                                    <img src="<?php echo $image; ?>" alt="" class="img-responsive" width="200">
                                 </div>
 
                                 <div class="form-group">

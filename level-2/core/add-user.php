@@ -31,7 +31,7 @@ set_status ( $status, $user_id );
 add_social_links ( $telegram, $instagram, $vk, $user_id );
 
 // Upload user avatar image
-upload_avatar ( $_FILES['image'], $user_id );
+upload_avatar ( $_FILES['image'], $user_id, '../create_user.php' );
 
 // Set flash success message
 set_flash_message('success', 'Профиль успешно добавлен.');

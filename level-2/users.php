@@ -3,7 +3,7 @@
     require "core/functions.php";
 
     if ( is_usert_not_logged_in() ) {
-        redirect_to('page_login.php')
+        redirect_to('page_login.php');
     }
 
     $users = get_all('users');
