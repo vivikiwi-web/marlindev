@@ -20,7 +20,7 @@ class Database {
     /**
      * Instance of Database class
      *
-     * @return void
+     * @return Database
      */
     public static function getInstance () {
         if ( !isset(self::$instance) ) {
@@ -34,6 +34,7 @@ class Database {
      *
      * @param string $sql
      * @param array $params
+     * @return object
      */
     public function query ( string $sql, array $params = [] ) {
 
@@ -62,7 +63,7 @@ class Database {
      *
      * @param string $table
      * @param array $where
-     * @return void
+     * @return object
      */
     public function get ( string $table, array $where ) {
         // dnd($table);
@@ -72,7 +73,7 @@ class Database {
     /**
      * Return first element from database query result
      *
-     * @return void
+     * @return object
      */
     public function first () {
         return $this->results()[0];
@@ -83,7 +84,7 @@ class Database {
      *
      * @param string $table
      * @param array $where
-     * @return void
+     * @return object
      */
     public function delete ( string $table, array $where ) {
         return $this->action( "DELETE", $table, $where);
@@ -94,7 +95,7 @@ class Database {
      *
      * @param string $table
      * @param array $params
-     * @return void
+     * @return boolean
      */
     public function insert ( string $table, array $params ) {
 
@@ -126,7 +127,7 @@ class Database {
      * @param string $table
      * @param integer $id
      * @param array $params
-     * @return void
+     * @return boolean
      */
     public function update ( string $table, int $id, array $params ) {
 
@@ -150,7 +151,7 @@ class Database {
      * @param string $action
      * @param string $table
      * @param array $where
-     * @return void
+     * @return boolean|object
      */
     private function action ( string $action, string $table, array $where ) {
 
@@ -185,7 +186,7 @@ class Database {
     /**
      * Return object of database query result
      *
-     * @return Database
+     * @return object
      */
     public function results () {
         return $this->results;

@@ -18,7 +18,14 @@ $GLOBALS["config"] = [
         "password" => "root",
         "dbname"   => "marlindev_3level",
     ],
+    "db_table" => [
+        "users_table" => [
+            "name" => "users",
+            "login_main_field" => "email",
+        ]
+    ],
     "session" => [
-        "token_name" => "token"
+        "token_name" => "token",
+        "user_session" => "user",
     ]
 ];

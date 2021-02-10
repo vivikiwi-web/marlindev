@@ -5,42 +5,39 @@ $pdo = Database::getInstance();
 
 if ( Input::exists() ) {
     
-    if ( Token::check( Input::get( 'token' ) )) {
+    if ( Token::check( Input::get( "token" ) )) {
         $validate = new Validate;
-        $validation = $validate->check( $_POST, [
-            "username" => [
-                "required" => true,
-                "min" => 2,
-                "max" => 15,
-                "unique" => "users"
-            ],
-            "password" => [
-                "required" => true,
-                "min" => 2,
-                "max" => 15,
-            ],
+        $validate->check( $_POST, [
+            "email" => [ "required" => true, "email" => true ],
+            "password" => [ "required" => true ]
         ]);
     
-        if ( $validation->passed() ) {
-            Session::flash( 'success', 'Login success.');
+        if ( $validate->passed() ) {
+            $user = new User;
+            $login = $user->login( Input::get("email" ), Input::get( "password") );
+
+            if ( $login ) {
+                Session::flash( "success", "Login success");
+            } else {
+                echo "Login failed";
+            }
+
         } else {
-            foreach ( $validation->errors() as $errorMessage ) {
+            foreach ( $validate->errors() as $errorMessage ) {
                 echo $errorMessage . "<br />";
             }
         }
-    } else {
-        echo "wrong token";
     }
 }
 
-echo Session::flash( 'success' );
+echo Session::flash( "success" );
 
 ?>
 
 <form action="" method="post">
     <div>
-        <label for="username">Username</label>
-        <input type="text" name="username" value="<?php echo Input::get('username'); ?>" />
+        <label for="email">Email</label>
+        <input type="text" name="email" value="<?php echo Input::get("email"); ?>" />
     </div>
     <div>
         <label for="password">Password</label>
