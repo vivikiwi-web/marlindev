@@ -8,6 +8,13 @@ class Validate {
         $this->db = Database::getInstance();
     }
 
+    /**
+     * Check validation
+     *
+     * @param $_POST,$_GET $method
+     * @param array $items
+     * @return Validate
+     */
     public function check ( $method, array $items = [] ) {
         foreach ( $items as $item => $rules ) {
             foreach ( $rules as $rule => $rule_value) {
@@ -55,14 +62,30 @@ class Validate {
         return $this;
     }
 
+    /**
+     * Add error message
+     *
+     * @param string $errorMessage
+     * @return void
+     */
     private function addError( string $errorMessage ) {
         $this->errors[] = $errorMessage;
     }
 
+    /**
+     * Return errors array variable
+     *
+     * @return array
+     */
     public function errors () {
         return $this->errors;
     }
 
+    /**
+     * Return passed variable
+     *
+     * @return boolean
+     */
     public function passed () {
         return $this->passed;
     }

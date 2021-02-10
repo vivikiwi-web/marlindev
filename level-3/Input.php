@@ -2,8 +2,14 @@
 
 class Input {
 
-    public static function exists( string $post = "post" ) {
-        switch ( $post ) {
+    /**
+     * Chec if form was submited by method
+     *
+     * @param string $method
+     * @return boolean
+     */
+    public static function exists( string $method = "post" ) {
+        switch ( $method ) {
             case "post":
                 return ( !empty($_POST) ) ? true : false;
             case "get":
@@ -14,6 +20,12 @@ class Input {
         }
     }
 
+    /**
+     * Get field value by method
+     *
+     * @param string $field
+     * @return string
+     */
     public static function get ( string $field ) {
         if ( isset($_POST[$field]) ) {
             return $_POST[$field];
