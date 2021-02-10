@@ -46,7 +46,7 @@ if ( Input::exists() ) {
         ]);
     
         if ( $validation->passed() ) {
-            echo "passed";
+            Session::flash( 'success', 'Register success.');
         } else {
             foreach ( $validation->errors() as $errorMessage ) {
                 echo $errorMessage . "<br />";
@@ -56,6 +56,8 @@ if ( Input::exists() ) {
         echo "wrong token";
     }
 }
+
+echo Session::flash( 'success' );
 
 ?>
 

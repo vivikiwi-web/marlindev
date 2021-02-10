@@ -43,4 +43,21 @@ class Session {
     public static function get ( $name ) {
         return $_SESSION[$name];
     }
+
+    /**
+     * Set FLASH message to SESSION or return FLASH message
+     *
+     * @param string $name
+     * @param string $message
+     * @return string
+     */
+    public static function flash ( string $name, string $message = "") {
+        if ( self::exists($name) && self::get($name) !== "" ) {
+            $sesion = self::get($name);
+            self::delete( $name );
+            return $sesion;
+        } else {
+            self::put( $name, $message );
+        }
+    }
 }
