@@ -1,13 +1,29 @@
 <?php 
 
 class User {
-    private $db = null, $data, $user_session, $user_table;
+    private $db = null, $data, $user_session, $users_table, $isLoggedIn;
 
-    public function __construct() {
+    public function __construct( $user = "" ) {
         $this->db = Database::getInstance();
         $this->user_session = Config::get( "session.user_session" );
         $this->users_table = Config::get( "db_table.users_table.name" );
         $this->login_main_field = Config::get( "db_table.users_table.login_main_field" );
+
+        if ( !$user ) {
+
+            if ( Session::exists( $this->user_session ) ) {
+                $user = $this->first(Session::get($this->user_session) );
+                
+                if ( $user ) {
+                    $this->isLoggedIn = true;
+                } else {
+                    // logout
+                }
+            }
+
+        } else {
+            $user = $this->first($user );
+        }
     }
 
     /**
@@ -42,14 +58,22 @@ class User {
     }
 
     /**
-     * Find first row in search table
+     * Find first row in search table by ID or Main field
      *
-     * @param string $email
+     * @param string|integer $value
      * @return boolean
      */
-    public function first ( string $email ) {
-        $this->data = $this->db->get( $this->users_table, [$this->login_main_field, "=", $email] )->first();
-        return true;
+    public function first ( $value ) {
+
+        // If value is numeric then find by id else by main field
+        if ( is_numeric( $value ) ) {
+            $this->data = $this->db->get( $this->users_table, ["id", "=", $value] )->first();
+            return true;
+        } else {
+            $this->data = $this->db->get( $this->users_table, [$this->login_main_field, "=", $value] )->first();
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -59,5 +83,9 @@ class User {
      */
     public function data() {
         return $this->data;
+    }
+
+    public function isLoggedIn () {
+        return $this->isLoggedIn;
     }
 }
