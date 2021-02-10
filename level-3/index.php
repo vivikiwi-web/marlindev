@@ -2,6 +2,20 @@
 
 require_once "helpers.php";
 require_once "Database.php";
+require_once "Config.php";
+
+
+
+
+$GLOBALS["config"] = [
+    "mysql" => [
+        "host" => "localhost",
+        "username" => "root",
+        "password" => "root",
+        "dbname" => "marlindev_3level",
+    ]
+];
+
 
 $pdo = Database::getInstance();
 
@@ -13,9 +27,11 @@ $pdo = Database::getInstance();
 // $users = $pdo->delete( "users", ["username", "=", "test"] );
 
 
-$users = $pdo->query( "SELECT * FROM users");
+// $users = $pdo->query( "SELECT * FROM users");
 
-echo $users->first()->username;
+// echo $users->first()->username;
+
+// echo Config::get('mysql.dbname');
 
 // echo $users;
 // if ( $users->errors() ) {

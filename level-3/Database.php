@@ -6,7 +6,12 @@ class Database {
 
     private function __construct () {
         try {
-            $this->pdo = new PDO('mysql:host=localhost;dbname=marlindev_3level', 'root','root');
+            $host = Config::get('mysql.host');
+            $dbname = Config::get('mysql.dbname');
+            $username = Config::get('mysql.username');
+            $password = Config::get('mysql.password');
+
+            $this->pdo = new PDO("mysql:host={$host};dbname={$dbname}", $username,$password);
         } catch ( PDOException $e ) {
             die( 'Error: ' . $e->getMessage() );
         }
@@ -29,7 +34,7 @@ class Database {
      *
      * @param string $sql
      * @param array $params
-     * @return Database
+     * @return void
      */
     public function query ( string $sql, array $params = [] ) {
 
