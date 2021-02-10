@@ -12,6 +12,11 @@ class Database {
         }
     }
 
+    /**
+     * Instance of Database class
+     *
+     * @return void
+     */
     public static function getInstance () {
         if ( !isset(self::$instance) ) {
             self::$instance = new Database;
@@ -19,6 +24,13 @@ class Database {
         return self::$instance;
     }
 
+    /**
+     * SQL query method witch excecute SQL queries
+     *
+     * @param string $sql
+     * @param array $params
+     * @return Database
+     */
     public function query ( string $sql, array $params = [] ) {
 
         $this->errors = false;
@@ -41,19 +53,45 @@ class Database {
         return $this;
     }
 
+    /**
+     * Get all from database with WHERE parameters
+     *
+     * @param string $table
+     * @param array $where
+     * @return void
+     */
     public function get ( string $table, array $where ) {
         // dnd($table);
         return $this->action( "SELECT *", $table, $where);
     }
 
+    /**
+     * Return first element from database query result
+     *
+     * @return void
+     */
     public function first () {
         return $this->results()[0];
     }
 
+    /**
+     * Delete row in databse
+     *
+     * @param string $table
+     * @param array $where
+     * @return void
+     */
     public function delete ( string $table, array $where ) {
         return $this->action( "DELETE", $table, $where);
     }
 
+    /**
+     * Insert row to databse
+     *
+     * @param string $table
+     * @param array $params
+     * @return void
+     */
     public function insert ( string $table, array $params ) {
 
         $values = "";
@@ -78,6 +116,14 @@ class Database {
         return false;
     }
 
+    /**
+     * Update row in database
+     *
+     * @param string $table
+     * @param integer $id
+     * @param array $params
+     * @return void
+     */
     public function update ( string $table, int $id, array $params ) {
 
         $values = "";
@@ -94,6 +140,14 @@ class Database {
         return false;
     }
 
+    /**
+     * Convert variables to SQL query string and pas it in query() method
+     *
+     * @param string $action
+     * @param string $table
+     * @param array $where
+     * @return void
+     */
     private function action ( string $action, string $table, array $where ) {
 
         if ( count($where === 3) ) {
@@ -115,14 +169,29 @@ class Database {
 
     }
 
+    /**
+     * Return error truea or false of database query result
+     *
+     * @return boolean
+     */
     public function errors () {
         return $this->errors;
     }
 
+    /**
+     * Return object of database query result
+     *
+     * @return Database
+     */
     public function results () {
         return $this->results;
     }
 
+    /**
+     * Return row count of database query result
+     *
+     * @return integer
+     */
     public function count () {
         return $this->count;
     }
