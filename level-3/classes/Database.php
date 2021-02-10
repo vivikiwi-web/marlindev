@@ -34,7 +34,6 @@ class Database {
      *
      * @param string $sql
      * @param array $params
-     * @return void
      */
     public function query ( string $sql, array $params = [] ) {
 

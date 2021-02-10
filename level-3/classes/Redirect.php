@@ -7,7 +7,7 @@ class Redirect {
                 switch ( $location ) {
                     case "404":
                         header("HTTP/1.0 404 Not Found");
-                        include "include/errors/404.php";
+                        include "inc/errors/404.php";
                         exit;
                     break;
                 }

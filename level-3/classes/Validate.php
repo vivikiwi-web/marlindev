@@ -25,6 +25,7 @@ class Validate {
                     $this->addError( "{$item} fields is required." );
                 } else if ( !empty($fieldValue) ) {
                     switch ( $rule ) {
+
                         case "min":
                             if ( strlen($fieldValue) < $rule_value ) {
                                 $this->addError("{$item} must be a minimum of {$rule_value} characters.");
@@ -40,6 +41,12 @@ class Validate {
                         case "matches":
                             if ( $fieldValue != $method[$rule_value] ) {
                                 $this->addError("{$item} must match {$rule_value}.");
+                            }
+                        break;
+
+                        case "email":
+                            if ( !filter_var($fieldValue, FILTER_VALIDATE_EMAIL) ) {
+                                $this->addError("{$item} is not valid.");
                             }
                         break;
 
