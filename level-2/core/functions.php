@@ -6,7 +6,7 @@
  * @return object PDO
  */
 function pdo_connection () {
-    return new PDO("mysql:host=localhost;dbname=marlindev_2level_1task", 'root', 'root' );
+    return new PDO("mysql:host=localhost;dbname=marlindev_2level", 'root', 'root' );
 }
 
 /**
