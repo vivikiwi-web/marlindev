@@ -1,17 +1,23 @@
 <?php
+session_start();
 
 require_once "helpers.php";
 require_once "Database.php";
 require_once "Config.php";
 require_once "Input.php";
 require_once "Validate.php";
+require_once "Token.php";
+require_once "Session.php";
 
 $GLOBALS["config"] = [
     "mysql" => [
-        "host" => "localhost",
+        "host"     => "localhost",
         "username" => "root",
         "password" => "root",
-        "dbname" => "marlindev_3level",
+        "dbname"   => "marlindev_3level",
+    ],
+    "session" => [
+        "token_name" => "token"
     ]
 ];
 
@@ -19,49 +25,54 @@ $pdo = Database::getInstance();
 
 if ( Input::exists() ) {
     
-    $validate = new Validate;
-
-    $validation = $validate->check( $_POST, [
-        "username" => [
-            "required" => true,
-            "min" => 2,
-            "max" => 15,
-            "unique" => "users"
-        ],
-        "password" => [
-            "required" => true,
-            "min" => 2,
-            "max" => 15,
-        ],
-        "repeat_password" => [
-            "required" => true,
-            "matches" => "password"
-        ]
-    ]);
-
-    if ( $validation->passed() ) {
-        echo "passed";
-    } else {
-        foreach ( $validation->errors() as $errorMessage ) {
-            echo $errorMessage . "<br />";
+    if ( Token::check( Input::get( 'token' ) )) {
+        $validate = new Validate;
+        $validation = $validate->check( $_POST, [
+            "username" => [
+                "required" => true,
+                "min" => 2,
+                "max" => 15,
+                "unique" => "users"
+            ],
+            "password" => [
+                "required" => true,
+                "min" => 2,
+                "max" => 15,
+            ],
+            "repeat_password" => [
+                "required" => true,
+                "matches" => "password"
+            ]
+        ]);
+    
+        if ( $validation->passed() ) {
+            echo "passed";
+        } else {
+            foreach ( $validation->errors() as $errorMessage ) {
+                echo $errorMessage . "<br />";
+            }
         }
+    } else {
+        echo "wrong token";
     }
 }
 
 ?>
+
 <form action="" method="post">
     <div>
         <label for="username">Username</label>
-        <input type="text" name="username" value="<?php echo Input::get('username'); ?>">
+        <input type="text" name="username" value="<?php echo Input::get('username'); ?>" />
     </div>
     <div>
         <label for="password">Password</label>
-        <input type="text" name="password" value="">
+        <input type="text" name="password" value="" />
     </div>
     <div>
         <label for="repeat_password">Repeat Password</label>
-        <input type="text" name="repeat_password" value="">
+        <input type="text" name="repeat_password" value="" />
     </div>
+    <input type="hidden" name="token" value="<?php echo Token::generate(); ?>" />
     <input type="submit" value="Submit">
 </form>
 
