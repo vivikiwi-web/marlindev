@@ -9,6 +9,7 @@ require_once "Validate.php";
 require_once "Token.php";
 require_once "Session.php";
 require_once "User.php";
+require_once "Redirect.php";
 
 $GLOBALS["config"] = [
     "mysql" => [
