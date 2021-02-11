@@ -1,18 +1,18 @@
 <?php 
 
 class User {
-    private $db = null, $data, $user_session, $users_table, $isLoggedIn;
+    private $db = null, $data, $sessionName, $dbName, $mainField, $isLoggedIn;
 
     public function __construct( $user = "" ) {
         $this->db = Database::getInstance();
-        $this->user_session = Config::get( "session.user_session" );
-        $this->users_table = Config::get( "db_table.users_table.name" );
-        $this->login_main_field = Config::get( "db_table.users_table.login_main_field" );
+        $this->sessionName = Config::get( "session.user_session" );
+        $this->dbName = Config::get( "db_table.users_table.name" );
+        $this->mainField = Config::get( "db_table.users_table.login_main_field" );
 
         if ( !$user ) {
 
-            if ( Session::exists( $this->user_session ) ) {
-                $user = $this->first(Session::get($this->user_session) );
+            if ( Session::exists( $this->sessionName ) ) {
+                $user = $this->first(Session::get($this->sessionName) );
                 
                 if ( $user ) {
                     $this->isLoggedIn = true;
@@ -30,9 +30,10 @@ class User {
      * Insert row to database
      *
      * @param array $fields
+     * @return void
      */
     public function create ( array $fields = [] ) {
-        $this->db->insert( $this->users_table, $fields );
+        $this->db->insert( $this->dbName, $fields );
     }
 
     /**
@@ -49,12 +50,21 @@ class User {
 
             if ( $user ) {
                 if ( password_verify( $password, $this->data()->password ) ) {
-                    Session::put($this->user_session, $this->data()->id );
+                    Session::put($this->sessionName, $this->data()->id );
                     return true;
                 }
             }
         }
         return false;
+    }
+
+    /**
+     * Logout method, detele User session
+     *
+     * @return void
+     */
+    public function logout () {
+        return Session::delete( $this->sessionName );
     }
 
     /**
@@ -67,10 +77,10 @@ class User {
 
         // If value is numeric then find by id else by main field
         if ( is_numeric( $value ) ) {
-            $this->data = $this->db->get( $this->users_table, ["id", "=", $value] )->first();
+            $this->data = $this->db->get( $this->dbName, ["id", "=", $value] )->first();
             return true;
         } else {
-            $this->data = $this->db->get( $this->users_table, [$this->login_main_field, "=", $value] )->first();
+            $this->data = $this->db->get( $this->dbName, [$this->mainField, "=", $value] )->first();
             return true;
         }
         return false;
@@ -85,6 +95,11 @@ class User {
         return $this->data;
     }
 
+    /**
+     * Return boolean where True is Logged in
+     *
+     * @return boolean
+     */
     public function isLoggedIn () {
         return $this->isLoggedIn;
     }
