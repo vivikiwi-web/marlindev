@@ -24,7 +24,7 @@ class Session {
     }
 
     /**
-     * Create SESSION by given name
+     * Delete SESSION by given name
      *
      * @param string $name
      */

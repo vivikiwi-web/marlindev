@@ -1,13 +1,14 @@
 <?php 
 
 class User {
-    private $db = null, $data, $sessionName, $dbName, $mainField, $isLoggedIn;
+    private $db = null, $data, $sessionName, $cookieName, $usersTable, $cookieTable, $isLoggedIn;
 
     public function __construct( $user = "" ) {
         $this->db = Database::getInstance();
-        $this->sessionName = Config::get( "session.user_session" );
-        $this->dbName = Config::get( "db_table.users_table.name" );
-        $this->mainField = Config::get( "db_table.users_table.login_main_field" );
+        $this->sessionName  = Config::get( "session.user_session" );
+        $this->cookieName   = Config::get( "cookie.cookie_name" );
+        $this->usersTable   = Config::get( "db_table.users_table" );
+        $this->cookieTable = Config::get( "db_table.coockie_table" );
 
         if ( !$user ) {
 
@@ -33,7 +34,7 @@ class User {
      * @return void
      */
     public function create ( array $fields = [] ) {
-        $this->db->insert( $this->dbName, $fields );
+        $this->db->insert( $this->usersTable, $fields );
     }
 
     /**
@@ -41,16 +42,33 @@ class User {
      *
      * @param string $email
      * @param string $password
+     * @param boolean $remember
      * @return boolean
      */
-    public function login ( string $email = "", string $password = "" ) {
-        if ($email) {
-
+    public function login ( string $email = "", string $password = "", bool $remember = false ) {
+        // if user have no email and password, but data() exists, then set SESSION, because user have COOKIE
+        if ( !$email && !$password && $this->exists() ) {
+            Session::put($this->sessionName, $this->data()->id );
+        } else {
             $user = $this->first( $email );
-
             if ( $user ) {
                 if ( password_verify( $password, $this->data()->password ) ) {
                     Session::put($this->sessionName, $this->data()->id );
+
+                    // If uset checked REMEMBER ME checkbox
+                    if ( $remember ) {
+                        $hashCheck = $this->db->get( $this->cookieTable, ["user_id", "=", $this->data()->id] );
+                        if ( !$hashCheck->count() ) {
+                            $hash = hash( "sha256", uniqid() );
+                            $this->db->insert( $this->cookieTable, [
+                                "user_id" => $this->data()->id,
+                                "hash"    => $hash
+                            ] );
+                        } else {
+                            $hash = $hashCheck->first()->hash;
+                        }
+                        Cookie::put( $this->cookieName,$hash, Config::get( "cookie.cookie_expite" ) );
+                    }
                     return true;
                 }
             }
@@ -64,7 +82,13 @@ class User {
      * @return void
      */
     public function logout () {
-        return Session::delete( $this->sessionName );
+        $this->db->delete( $this->cookieTable, ["user_id", "=", $this->data()->id] );
+        Session::delete( $this->sessionName );
+        Cookie::delete( $this->cookieName );
+    }
+
+    public function exists () {
+        return ( !empty($this->data() )) ? true : false;
     }
 
     /**
@@ -77,10 +101,10 @@ class User {
 
         // If value is numeric then find by id else by main field
         if ( is_numeric( $value ) ) {
-            $this->data = $this->db->get( $this->dbName, ["id", "=", $value] )->first();
+            $this->data = $this->db->get( $this->usersTable, ["id", "=", $value] )->first();
             return true;
         } else {
-            $this->data = $this->db->get( $this->dbName, [$this->mainField, "=", $value] )->first();
+            $this->data = $this->db->get( $this->usersTable, ["email", "=", $value] )->first();
             return true;
         }
         return false;

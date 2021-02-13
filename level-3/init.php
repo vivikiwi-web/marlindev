@@ -10,6 +10,7 @@ require_once "classes/Token.php";
 require_once "classes/Session.php";
 require_once "classes/User.php";
 require_once "classes/Redirect.php";
+require_once "classes/Cookie.php";
 
 $GLOBALS["config"] = [
     "mysql" => [
@@ -19,13 +20,28 @@ $GLOBALS["config"] = [
         "dbname"   => "marlindev_3level",
     ],
     "db_table" => [
-        "users_table" => [
-            "name" => "users",
-            "login_main_field" => "email",
-        ]
+        "users_table" => "users",
+        "coockie_table" => "user_sessions",
     ],
     "session" => [
-        "token_name" => "token",
-        "user_session" => "user",
+        "token_name"    => "token",
+        "user_session"  => "user",
+    ],
+    "cookie" => [
+        "cookie_name"   => "hash",
+        "cookie_expite" => 604800
     ]
 ];
+
+
+// If we have an COOKIE but there ar no SESSION, login user to dashboard
+if ( Cookie::exists( Config::get("cookie.cookie_name")) && !Session::exists( Config::get("session.user_session")) ) {
+    $cookieTable = Config::get( "db_table.coockie_table" ); // Get databse table name from CONFIG
+    $hash = Cookie::get( Config::get( "cookie.cookie_name" ) ); // Get COOKIE hash from user by COOKIE CONFIG name
+    $hashCheck = Database::getInstance()->get( $cookieTable, ["hash", "=", $hash] ); // Check if COOKIE esists in databse
+
+    if ( $hashCheck->count() ) {
+        $user = new User( $hashCheck->first()->user_id ); // create user instance
+        $user->login(); // login user to dashboard
+    }
+}
