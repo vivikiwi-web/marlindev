@@ -87,6 +87,20 @@ class User {
         Cookie::delete( $this->cookieName );
     }
 
+    /**
+     * Update user information
+     *
+     * @param array $fields
+     * @param integer $id
+     * @return boolean
+     */
+    public function update ( array $fields = [], int $id = null ) {
+        if ( !$id && $this->isLoggedIn() ) {
+            $id = $this->data()->id;
+        }
+        return $this->db->update( $this->usersTable, $id, $fields );
+    }
+
     public function exists () {
         return ( !empty($this->data() )) ? true : false;
     }
