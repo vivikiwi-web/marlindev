@@ -9,6 +9,7 @@ class User {
         $this->cookieName   = Config::get( "cookie.cookie_name" );
         $this->usersTable   = Config::get( "db_table.users_table" );
         $this->cookieTable = Config::get( "db_table.coockie_table" );
+        $this->groupTable = Config::get( "db_table.group_table" );
 
         if ( !$user ) {
 
@@ -140,5 +141,27 @@ class User {
      */
     public function isLoggedIn () {
         return $this->isLoggedIn;
+    }
+
+    /**
+     * Check user permissions
+     *
+     * @param string $key
+     * @return boolean
+     */
+    public function hasPermissions ( string $key  ) {
+        
+        $group = $this->db->get( $this->groupTable, ['id', "=", $this->data()->group_id] );
+    
+        if ( $group->count() ) {
+            $permissions = $group->first()->permissions;
+            $permissions = json_decode( $permissions, true );
+            
+            if ( $permissions[ $key ] ) {
+                return true;
+            }
+            return false;
+        }
+
     }
 }

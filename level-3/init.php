@@ -22,6 +22,7 @@ $GLOBALS["config"] = [
     "db_table" => [
         "users_table" => "users",
         "coockie_table" => "user_sessions",
+        "group_table" => "groups",
     ],
     "session" => [
         "token_name"    => "token",
