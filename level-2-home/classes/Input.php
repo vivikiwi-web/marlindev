@@ -3,7 +3,7 @@
 class Input {
 
     /**
-     * Chec if form was submited by method
+     * Check if form was submited by method
      *
      * @param string $method
      * @return boolean
