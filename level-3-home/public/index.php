@@ -12,9 +12,5 @@ require_once ROOT . "libs/helpres.php";
 // Require bootstrap (autoload)
 require_once ROOT . "vendors/bootstrap/bootstrap.php";
 
-
-
-$db = DB::getInstance();
-
 $router = new Router;
 $router->run();

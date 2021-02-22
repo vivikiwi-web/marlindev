@@ -15,6 +15,7 @@ class Validate {
      * @return Validate
      */
     public function check ( $method, array $items = [] ) {
+
         foreach ( $items as $item => $rules ) {
             foreach ( $rules as $rule => $rule_value) {
 
