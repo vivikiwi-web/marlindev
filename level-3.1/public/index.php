@@ -38,8 +38,8 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
     $r->addRoute('GET', '/verification/{selector}/{token}', ['App\Controllers\UserController', 'verificationAction']);
     // $r->addRoute('GET', '/verification', ['App\Controllers\UserController', 'verificationAction']);
 
-    $r->addRoute('GET', '/user/{id:\d+}', 'get_user_handler');
-    $r->addRoute('GET', '/articles/{id:\d+}[/{title}]', 'get_article_handler');
+    // $r->addRoute('GET', '/user/{id:\d+}', 'get_user_handler');
+    // $r->addRoute('GET', '/articles/{id:\d+}[/{title}]', 'get_article_handler');
 });
 
 // // Fetch method and URI from somewhere
@@ -64,6 +64,8 @@ switch ($routeInfo[0]) {
     case FastRoute\Dispatcher::FOUND:
         $controller = $routeInfo[1];
         $params = $routeInfo[2];
-        $DI->call( $controller,$params );
+        $const = $DI->call( $controller,$params );
+        d( $params );
+        d( $const );
         break;
 }

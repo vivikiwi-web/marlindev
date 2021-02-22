@@ -8,7 +8,7 @@ use \Tamtamchik\SimpleFlash\Flash;
 
 class UserController
 {
-    private $userModel, $plate, $params;
+    private $userModel, $plate;
 
     public function __construct( User $userModel, Engine $plate )
     {
